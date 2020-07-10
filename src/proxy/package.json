@@ -1,0 +1,11 @@
+{
+  "name": "proxy",
+  "version": "1.0.0",
+  "author": "ondralukes <mail@ondralukes.cz>",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http-proxy": "^1.18.1",
+    "spdy": "^4.0.1"
+  }
+}

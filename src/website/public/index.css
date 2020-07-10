@@ -1,0 +1,8 @@
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.small {
+  font-size: 0.5rem;
+}

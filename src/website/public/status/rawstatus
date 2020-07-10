@@ -1,0 +1,46 @@
+[
+  {
+    "name": "website",
+    "url": "/",
+    "target": "http://website:8080",
+    "containerName": "website",
+    "container": {
+      "Command": "\"docker-entrypoint.s…\"",
+      "CreatedAt": "2020-03-02 12:43:48 +0000 UTC",
+      "ID": "6a0c36ed4757",
+      "Image": "website",
+      "Labels": "",
+      "LocalVolumes": "0",
+      "Mounts": "",
+      "Names": "website",
+      "Networks": "docker-network",
+      "Ports": "8080/tcp",
+      "RunningFor": "2 days ago",
+      "Size": "0B",
+      "Status": "Up 7 hours"
+    },
+    "reachable": true
+  },
+  {
+    "name": "proxy",
+    "url": "",
+    "target": "http://proxy:8080",
+    "containerName": "proxy",
+    "container": {
+      "Command": "\"docker-entrypoint.s…\"",
+      "CreatedAt": "2020-03-04 10:50:47 +0000 UTC",
+      "ID": "b4d2f194f398",
+      "Image": "proxy",
+      "Labels": "",
+      "LocalVolumes": "0",
+      "Mounts": "/usr/bin/docker,/var/run/docke…",
+      "Names": "proxy",
+      "Networks": "docker-network",
+      "Ports": "0.0.0.0:443->4443/tcp, 0.0.0.0:80->8080/tcp",
+      "RunningFor": "7 hours ago",
+      "Size": "0B",
+      "Status": "Up 7 hours"
+    },
+    "reachable": true
+  }
+]

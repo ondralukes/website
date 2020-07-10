@@ -1,0 +1,9 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "author": "ondralukes <mail@ondralukes.cz>",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.7.1"
+  }
+}

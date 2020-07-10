@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ondralukes.cz | Status Report</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="status.js"></script>
+</head>
+<body onload="fetchServices();">
+
+<div class="container">
+  <h1 class="text-center mt-5">Status Report</h1>
+  <div class="row text-center">
+    <div class="col-sm-2 font-weight-bold serv-name">Name</div>
+    <div class="col-sm-2 font-weight-bold serv-url">URL</div>
+    <div class="col-sm-2 font-weight-bold serv-target">Target</div>
+    <div class="col-sm-2 font-weight-bold serv-reachable">Reachable</div>
+    <div class="col-sm-4 font-weight-bold serv-container">
+      Container
+  </div>
+</div>
+  <div style="display: none;" class="row text-center my-3" id="serv-template">
+    <div class="col-sm-2 serv-name">col</div>
+    <div class="col-sm-2 serv-url">col</div>
+    <div class="col-sm-2 serv-target">col</div>
+    <div class="col-sm-2 serv-reachable">col</div>
+    <div class="col-sm-4 serv-container">
+      <div class="row serv-container-row" style="display: none;">
+      <div class="col-sm-6 serv-container-key font-weight-bold">key</div>
+      <div class="col-sm-6 serv-container-val">val</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
