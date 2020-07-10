@@ -32,6 +32,7 @@ jobs:
         RESULT=0
         if git clone https://ondralukes:${GIT_TOKEN}@github.com/ondralukes/website.git; then
           cd website/src
+          ./website/fillgitinfo.sh
           docker create network docker-network
           docker-compose down
           if docker-compose down; then
