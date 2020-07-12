@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ondralukes.cz | Traffic stats</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="stats.js"></script>
+</head>
+<body onload="fetchStats();">
+
+<div class="container">
+  <h1 class="text-center mt-5">Traffic stats</h1>
+  <div class="row text-center">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4 font-weight-bold text-center">Visits</div>
+    <div class="col-sm-4 font-weight-bold text-center">Unique visits</div>
+</div>
+  <div class="row text-center">
+    <div class="col-sm-4 font-weight-bold">This minute</div>
+    <div id="minute" class="col-sm-4 text-center">Fetching...</div>
+    <div id="minute-unique" class="col-sm-4 text-center">Fetching...</div>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-4 font-weight-bold">This hour</div>
+    <div id="hour" class="col-sm-4 text-center">Fetching...</div>
+    <div id="hour-unique" class="col-sm-4 text-center">Fetching...</div>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-4 font-weight-bold">Today</div>
+    <div id="today" class="col-sm-4 text-center">Fetching...</div>
+    <div id="today-unique" class="col-sm-4 text-center">Fetching...</div>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-4 font-weight-bold">This month</div>
+    <div id="month" class="col-sm-4 text-center">Fetching...</div>
+    <div id="month-unique" class="col-sm-4 text-center">Fetching...</div>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-4 font-weight-bold">This year</div>
+    <div id="year" class="col-sm-4 text-center">Fetching...</div>
+    <div id="year-unique" class="col-sm-4 text-center">Fetching...</div>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-4 font-weight-bold">Total</div>
+    <div id="total" class="col-sm-4 text-center">Fetching...</div>
+    <div id="total-unique" class="col-sm-4 text-center">Fetching...</div>
+  </div>
+</div>
+
+</body>
+</html>
