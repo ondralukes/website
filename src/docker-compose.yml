@@ -17,6 +17,8 @@ services:
     build: website
     container_name: website
     restart: unless-stopped
+    volumes:
+      - /var/website-stats:/var/website-stats
     networks:
       - docker-network
 networks:
