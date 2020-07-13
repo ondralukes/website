@@ -9,7 +9,8 @@ app.use(
     statsCounter(
         {
             visitTime: 300,
-            apiPath: '/getstats'
+            apiPath: '/getstats',
+            savePath: '/var/website-stats/stats'
         }
     )
 );
