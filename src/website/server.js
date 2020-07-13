@@ -9,11 +9,11 @@ app.use(
     statsCounter(
         {
             visitTime: 300,
-            apiPath: '/getstats',
-            savePath: '/var/website-stats/stats'
+            apiPath: '/getstats'
         }
     )
-)
+);
+
 app.use(express.static('public'));
 
 app.use((req, res) => {

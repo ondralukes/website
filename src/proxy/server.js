@@ -59,23 +59,38 @@ app.get('/rawstatus', (req, res) => {
       var output = services;
       var servicesPinged = 0;
       output.forEach((service) => {
-        var container = containers.find(x => x.Names == service.containerName);
+        var container = containers.find(x => x.Names === service.containerName);
         service.container = container;
-        var req = http.request(service.target,(tmp) => {
-          service.reachable = true;
-          servicesPinged++;
-          if(servicesPinged == services.length){
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify(output));
-            res.end();
+        const time = Math.floor(Date.now() / 1000);
+
+        const url = new URL(service.target);
+
+        const options = {
+          hostname: url.hostname,
+          port: url.port,
+          path: '/',
+          headers: {
+            'Cookie': 'stats-lastRequest=' + time
           }
-        });
+        };
+
+        const req = http.request(
+            options,
+            (tmp) => {
+              service.reachable = true;
+              servicesPinged++;
+              if (servicesPinged === services.length) {
+                res.setHeader('Content-Type', 'application/json');
+                res.write(JSON.stringify(output));
+                res.end();
+              }
+            });
 
         req.on('error', (err) => {
           console.log(err.message);
           service.reachable = false;
           servicesPinged++;
-          if(servicesPinged == services.length){
+          if(servicesPinged === services.length){
             res.setHeader('Content-Type', 'application/json');
             res.write(JSON.stringify(output));
             res.end();

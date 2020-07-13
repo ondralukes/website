@@ -5,6 +5,6 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.7.1",
-    "stats-counter": "^2.0.0"
+    "stats-counter": "^2.0.1"
   }
 }
