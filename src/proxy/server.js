@@ -108,6 +108,11 @@ services.forEach((item) => {
   app.all(matchRegex, (req, res) => {
     //Remove service path root
     const newPath = req.path.replace(item.url, '');
+    if(newPath === ''){
+      res.redirect('https://' + req.headers.host + req.url + '/');
+      return;
+    }
+
     req.url = req.url.replace(req.path, newPath);
 
     //Redirect request
