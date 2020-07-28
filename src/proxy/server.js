@@ -2,7 +2,6 @@ const express = require('express');
 const spdy = require('spdy');
 const fs = require('fs');
 const http = require('http');
-const https = require('https');
 const proxy = require('http-proxy');
 const exec = require('child_process').exec;
 
@@ -17,13 +16,13 @@ var proxyServer = proxy.createProxyServer();
 const services = [
   { 
    name: 'vault',
-   url: '/vault/',
+   url: '/vault',
    target: 'http://vault:8080',
    containerName: 'vault'
   },
   {
     name: 'website',
-    url: '/',
+    url: '',
     target: 'http://website:8080',
     containerName: 'website'
   },
@@ -59,8 +58,7 @@ app.get('/rawstatus', (req, res) => {
       var output = services;
       var servicesPinged = 0;
       output.forEach((service) => {
-        var container = containers.find(x => x.Names === service.containerName);
-        service.container = container;
+        service.container = containers.find(x => x.Names === service.containerName);
         const time = Math.floor(Date.now() / 1000);
 
         const url = new URL(service.target);
@@ -104,9 +102,15 @@ app.get('/rawstatus', (req, res) => {
 });
 
 services.forEach((item) => {
-  app.all(item.url + '*', (req, res) => {
-    console.log("access to " + item.url);
-    req.url = req.url.replace(item.url, '/');
+  const escapedUrl = item.url.replace(/\//g,'\\/');
+  //Match with or without trailing slash
+  const matchRegex = new RegExp(`^(${escapedUrl}\\/|${escapedUrl}$)`);
+  app.all(matchRegex, (req, res) => {
+    //Remove service path root
+    const newPath = req.path.replace(item.url, '');
+    req.url = req.url.replace(req.path, newPath);
+
+    //Redirect request
     proxyServer.web(req, res, {target: item.target}, (err) => {
       res.statusCode = 500;
       res.write("Proxy error.");
