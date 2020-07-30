@@ -109,7 +109,13 @@ services.forEach((item) => {
     //Remove service path root
     const newPath = req.path.replace(item.url, '');
     if(newPath === ''){
-      res.redirect('https://' + req.headers.host + req.url + '/');
+      let newUrl = req.url;
+      if(newUrl.includes('?')){
+        newUrl = newUrl.replace('?', '/?');
+      } else {
+        newUrl += '/';
+      }
+      res.redirect('https://' + req.headers.host + newUrl);
       return;
     }
 
