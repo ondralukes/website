@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/ondralukes
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://ondralukes.cz
+  * I am ondralukes (https://keybase.io/ondralukes) on keybase.
+  * I have a public key ASDHErFLzfmmJxtH6MQf49X_EHGSW8um39qOKv1PgCcM4wo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101ebb368e6644480f10f66cdeefff31e2a8eaa1af0fc86178e5a805611e128c2950a",
+      "host": "keybase.io",
+      "kid": "0120c712b14bcdf9a6271b47e8c41fe3d5ff1071925bcba6dfda8e2afd4f80270ce30a",
+      "uid": "a3c773936a655261fb59b5bc4d2b5119",
+      "username": "ondralukes"
+    },
+    "merkle_root": {
+      "ctime": 1598037602,
+      "hash": "c68c97cd6cf32a1cd43384e7f937d330db1ebd355cb878c55ebe6198f8d8f70c220c8afc77db2f1b4e056fc9b425e3b1ecab64144ca9b09d71a42cdc86a69a44",
+      "hash_meta": "d26b56b730820444085862417993015153ee3c34ffad31da8a670aba8590d7d5",
+      "seqno": 17347567
+    },
+    "service": {
+      "entropy": "P8hBJC717e0IViHmK82OIHtD",
+      "hostname": "ondralukes.cz",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.5.1"
+  },
+  "ctime": 1598037636,
+  "expire_in": 504576000,
+  "prev": "28f35dbc86ed7565603a5c08c5c2be8a84efc13f2ad8bd47877bf56b923119ad",
+  "seqno": 12,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgxxKxS835picbR+jEH+PV/xBxklvLpt/ajir9T4AnDOMKp3BheWxvYWTESpcCDMQgKPNdvIbtdWVgOlwIxcK+ioTvwT8q2L1Hh3v1a5IxGa3EIEDddnAvGIo2qMfUP3nPmhLht3qpaBGWD5MbdK/w2TxPAgHCo3NpZ8RA2GFwP2+QHVAQh9gsnWNzagARcfYIg9rZpwkLlS/qfEVUQgkuey6lU4SirR9RJiRiqb/uJSMlN7ZqAHwTmj98D6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIKV6BrI/782TJ4u3mkVqWRPMiNBDdscRmFXuSNtIJR2Ro3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/ondralukes
+
+==================================================================
