@@ -4,6 +4,7 @@ const fs = require('fs');
 const http = require('http');
 const proxy = require('http-proxy');
 const exec = require('child_process').exec;
+const net = require('net');
 
 var key = fs.readFileSync("/var/tls/live/ondralukes.cz/privkey.pem");
 var cert = fs.readFileSync("/var/tls/live/ondralukes.cz/fullchain.pem");
@@ -14,23 +15,26 @@ var app = express();
 var proxyServer = proxy.createProxyServer();
 
 const services = [
-  { 
-   name: 'vault',
-   url: '/vault',
-   target: 'http://vault:8080',
-   containerName: 'vault'
+  {
+    name: 'vault',
+    url: '/vault',
+    target: 'http://vault:8080',
+    containerName: 'vault',
+    proxy: true
   },
   {
     name: 'website',
     url: '',
     target: 'http://website:8080',
-    containerName: 'website'
+    containerName: 'website',
+    proxy: true
   },
   {
     name: 'proxy',
     url: '',
     target: 'http://proxy:8080',
-    containerName: 'proxy'
+    containerName: 'proxy',
+    proxy: true
   }
 ]
 
@@ -51,50 +55,49 @@ app.get('/rawstatus', (req, res) => {
       res.end();
     } else {
       res.statusCode = 200;
-      var jsonStr = stdout.split('}').join('},');
+      let jsonStr = stdout.split('}').join('},');
       jsonStr = '[' + jsonStr.substring(0, jsonStr.lastIndexOf(',')) + ']';
-      console.log(jsonStr);
-      var containers = JSON.parse(jsonStr);
-      var output = services;
-      var servicesPinged = 0;
+      const containers = JSON.parse(jsonStr);
+      const output = services;
+      let servicesPinged = 0;
       output.forEach((service) => {
         service.container = containers.find(x => x.Names === service.containerName);
-        const time = Math.floor(Date.now() / 1000);
+        let target = service.target.replace(/.*\/\//, '');
+        let parts = target.split(':');
 
-        const url = new URL(service.target);
+        let port = parseInt(parts[1], 10);
+        let host = parts[0];
+        let socket = net.connect(port, host);
 
-        const options = {
-          hostname: url.hostname,
-          port: url.port,
-          path: '/',
-          headers: {
-            'Cookie': 'stats-lastRequest=' + time
-          }
-        };
-
-        const req = http.request(
-            options,
-            (tmp) => {
-              service.reachable = true;
-              servicesPinged++;
-              if (servicesPinged === services.length) {
-                res.setHeader('Content-Type', 'application/json');
-                res.write(JSON.stringify(output));
-                res.end();
-              }
-            });
-
-        req.on('error', (err) => {
-          console.log(err.message);
+        let timer = setTimeout(() => {
           service.reachable = false;
           servicesPinged++;
-          if(servicesPinged === services.length){
+          if (servicesPinged === services.length) {
+            res.setHeader('Content-Type', 'application/json');
+            res.write(JSON.stringify(output));
+            res.end();
+          }
+        }, 500);
+        socket.on('error', () => {
+          service.reachable = false;
+          servicesPinged++;
+          clearInterval(timer);
+          if (servicesPinged === services.length) {
             res.setHeader('Content-Type', 'application/json');
             res.write(JSON.stringify(output));
             res.end();
           }
         });
-        req.end();
+        socket.on('connect', () => {
+          service.reachable = true;
+          servicesPinged++;
+          clearInterval(timer);
+          if (servicesPinged === services.length) {
+            res.setHeader('Content-Type', 'application/json');
+            res.write(JSON.stringify(output));
+            res.end();
+          }
+        });
       });
 
     }
@@ -102,6 +105,7 @@ app.get('/rawstatus', (req, res) => {
 });
 
 services.forEach((item) => {
+  if(!item.proxy) return;
   const escapedUrl = item.url.replace(/\//g,'\\/');
   //Match with or without trailing slash
   const matchRegex = new RegExp(`^(${escapedUrl}\\/|${escapedUrl}$)`);
