@@ -16,6 +16,13 @@ var proxyServer = proxy.createProxyServer();
 
 const services = [
   {
+    name: 'sfshr-server',
+    url: '',
+    target: 'sfshr-server:40788',
+    containerName: 'sfshr-server',
+    proxy: false
+  },
+  {
     name: 'vault',
     url: '/vault',
     target: 'http://vault:8080',
