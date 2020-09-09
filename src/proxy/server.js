@@ -3,8 +3,8 @@ const spdy = require('spdy');
 const fs = require('fs');
 const http = require('http');
 const proxy = require('http-proxy');
-const exec = require('child_process').exec;
-const net = require('net');
+
+const StatusChecker = require("./status-checker");
 
 var key = fs.readFileSync("/var/tls/live/ondralukes.cz/privkey.pem");
 var cert = fs.readFileSync("/var/tls/live/ondralukes.cz/fullchain.pem");
@@ -43,7 +43,9 @@ const services = [
     containerName: 'proxy',
     proxy: true
   }
-]
+];
+
+const status = new StatusChecker(services, 10);
 
 //Redirect http to https
 app.use((req, res, next) => {
@@ -56,59 +58,8 @@ app.use((req, res, next) => {
 
 app.get('/rawstatus', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  exec('docker ps -a --format=\'{{json .}}\'', (err, stdout, stderr) => {
-    if(err){
-      res.statusCode = 500;
-      res.end();
-    } else {
-      res.statusCode = 200;
-      let jsonStr = stdout.split('}').join('},');
-      jsonStr = '[' + jsonStr.substring(0, jsonStr.lastIndexOf(',')) + ']';
-      const containers = JSON.parse(jsonStr);
-      const output = services;
-      let servicesPinged = 0;
-      output.forEach((service) => {
-        service.container = containers.find(x => x.Names === service.containerName);
-        let target = service.target.replace(/.*\/\//, '');
-        let parts = target.split(':');
-
-        let port = parseInt(parts[1], 10);
-        let host = parts[0];
-        let socket = net.connect(port, host);
-
-        let timer = setTimeout(() => {
-          service.reachable = false;
-          servicesPinged++;
-          if (servicesPinged === services.length) {
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify(output));
-            res.end();
-          }
-        }, 500);
-        socket.on('error', () => {
-          service.reachable = false;
-          servicesPinged++;
-          clearInterval(timer);
-          if (servicesPinged === services.length) {
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify(output));
-            res.end();
-          }
-        });
-        socket.on('connect', () => {
-          service.reachable = true;
-          servicesPinged++;
-          clearInterval(timer);
-          if (servicesPinged === services.length) {
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify(output));
-            res.end();
-          }
-        });
-      });
-
-    }
-  });
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(status.get()));
 });
 
 services.forEach((item) => {
