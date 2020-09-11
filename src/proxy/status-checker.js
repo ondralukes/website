@@ -7,7 +7,10 @@ class StatusChecker {
         this.cacheInterval = cacheInterval;
         this.services = services;
         this.lastFetched = 0;
-        this.value = {};
+        this.value = {
+            services: {},
+            system: {}
+        };
     }
 
     get(){
@@ -21,7 +24,7 @@ class StatusChecker {
     update(){
         exec('docker ps -a --format=\'{{json .}}\'', (err, stdout, stderr) => {
             if(err){
-                this.value = {}
+                this.value.services = {}
             } else {
                 let jsonStr = stdout.split('}').join('},');
                 jsonStr = '[' + jsonStr.substring(0, jsonStr.lastIndexOf(',')) + ']';
@@ -41,7 +44,7 @@ class StatusChecker {
                         service.reachable = false;
                         servicesPinged++;
                         if (servicesPinged === this.services.length) {
-                            this.value = output;
+                            this.value.services = output;
                         }
                     }, 500);
                     socket.on('error', () => {
@@ -49,7 +52,7 @@ class StatusChecker {
                         servicesPinged++;
                         clearInterval(timer);
                         if (servicesPinged === this.services.length) {
-                            this.value = output;
+                            this.value.services = output;
                         }
                     });
                     socket.on('connect', () => {
@@ -57,13 +60,39 @@ class StatusChecker {
                         servicesPinged++;
                         clearInterval(timer);
                         if (servicesPinged === this.services.length) {
-                            this.value = output;
+                            this.value.services = output;
                         }
                     });
                 });
 
             }
         });
+        exec('cat /usr/host-loadavg', (err, stdout, stderr) => {
+            if(err){
+                this.value.system.load = undefined;
+            } else {
+                this.value.system.load = parseFloat(stdout.split(' ')[0]);
+            }
+        });
+        exec('grep -c processor /usr/host-cpuinfo', (err, stdout, stderr) => {
+            if(err){
+                this.value.system.nproc = undefined;
+            } else {
+                this.value.system.nproc = parseFloat(stdout);
+            }
+        });
+        exec('cat /usr/host-meminfo | grep \'MemTotal\\|MemAvailable\'', (err, stdout, stderr) => {
+            if(err){
+                this.value.system.mem = undefined;
+            } else {
+                console.log(stdout);
+                this.value.system.mem = {
+                    total: parseInt(stdout.match(/MemTotal: *([0-9]*) kB/)[1],10),
+                    available: parseInt(stdout.match(/MemAvailable: *([0-9]*) kB/)[1],10)
+                }
+            }
+        });
+
     }
 }
 
