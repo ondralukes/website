@@ -56,10 +56,10 @@ app.use((req, res, next) => {
   }
 })
 
-app.get('/rawstatus', (req, res) => {
+app.get('/rawstatus', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(status.get()));
+  res.end(JSON.stringify(await status.get()));
 });
 
 services.forEach((item) => {
