@@ -2,7 +2,9 @@ function fetchServices(){
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(){
     if(xhr.readyState === 4 && xhr.status === 200){
-      addServices(JSON.parse(xhr.responseText).services);
+      const resp = JSON.parse(xhr.responseText);
+      addServices(resp.services);
+      updateSystem(resp.system);
     }
   };
   xhr.open("GET", "/rawstatus", true);
@@ -44,4 +46,15 @@ function addServices(services){
     }
     template.parentNode.appendChild(clone);
   });
+}
+function updateSystem(system){
+  const cpu = system.cpu * 100;
+  document.getElementById('cpu-load-bar').setAttribute("aria-valuenow", cpu);
+  document.getElementById('cpu-load-bar').style.width = `${cpu.toFixed(2)}%`;
+  document.getElementById('cpu-load-value').innerText = `${cpu.toFixed(2)}%`;
+
+  const mem = system.mem * 100;
+  document.getElementById('mem-bar').setAttribute("aria-valuenow", mem);
+  document.getElementById('mem-bar').style.width = `${mem.toFixed(2)}%`;
+  document.getElementById('mem-value').innerText = `${mem.toFixed(2)}%`;
 }
