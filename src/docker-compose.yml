@@ -11,6 +11,9 @@ services:
       - /etc/letsencrypt/:/var/tls:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
+      - /proc/loadavg:/usr/host-loadavg:ro
+      - /proc/cpuinfo:/usr/host-cpuinfo:ro
+      - /proc/meminfo:/usr/host-meminfo:ro
     networks:
       - docker-network
   website:

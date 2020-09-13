@@ -1,0 +1,14 @@
+.progress {
+  position: relative;
+  height: 25pt;
+}
+
+.progress-bar-label{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 25pt;
+  font-size: 15pt;
+}
