@@ -10,8 +10,8 @@ function fetchServices(){
     if(xhr.readyState === 4 && xhr.status === 200){
       const resp = JSON.parse(xhr.responseText);
       const services = resp.services;
-      const cpu = resp.system.load / resp.system.nproc * 100;
-      const mem = (1 - resp.system.mem.available / resp.system.mem.total) * 100;
+      const cpu = resp.system.cpu * 100;
+      const mem = resp.system.mem * 100;
       const count = services.length;
       let reachable = 0;
       services.forEach((service) => {

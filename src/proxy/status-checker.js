@@ -79,42 +79,35 @@ class StatusChecker {
         })
     }
 
-    updateSystem(){
-        return Promise.all([
-            new Promise(resolve => {
+    async updateSystem(){
+        const load
+            = await new Promise(resolve => {
                 exec('cat /usr/host-loadavg', (err, stdout, stderr) => {
-                    if(err){
-                        this.value.system.load = undefined;
-                    } else {
-                        this.value.system.load = parseFloat(stdout.split(' ')[0]);
-                    }
-                    resolve();
+                    resolve(parseFloat(stdout.split(' ')[0]));
                 });
-            }),
-            new Promise(resolve => {
-                exec('grep -c processor /usr/host-cpuinfo', (err, stdout, stderr) => {
-                    if(err){
-                        this.value.system.nproc = undefined;
-                    } else {
-                        this.value.system.nproc = parseFloat(stdout);
-                    }
-                    resolve();
-                });
-            }),
-            new Promise(resolve => {
-                exec('cat /usr/host-meminfo | grep \'MemTotal\\|MemAvailable\'', (err, stdout, stderr) => {
-                    if(err){
-                        this.value.system.mem = undefined;
-                    } else {
-                        this.value.system.mem = {
-                            total: parseInt(stdout.match(/MemTotal: *([0-9]*) kB/)[1],10),
-                            available: parseInt(stdout.match(/MemAvailable: *([0-9]*) kB/)[1],10)
-                        }
-                    }
-                    resolve();
-                });
-            })
-        ])
+            });
+
+        const nproc
+            = await new Promise(resolve => {
+            exec('grep -c processor /usr/host-cpuinfo', (err, stdout, stderr) => {
+                resolve(parseFloat(stdout));
+            });
+        });
+
+        this.value.system.cpu = load/nproc;
+
+        await new Promise(resolve => {
+            exec('cat /usr/host-meminfo | grep \'MemTotal\\|MemAvailable\'', (err, stdout, stderr) => {
+                if(err){
+                    this.value.system.mem = undefined;
+                } else {
+                    const avail = parseInt(stdout.match(/MemAvailable: *([0-9]*) kB/)[1],10);
+                    const total = parseInt(stdout.match(/MemTotal: *([0-9]*) kB/)[1],10);
+                    this.value.system.mem = 1-avail/total;
+                }
+                resolve();
+            });
+        });
     }
 }
 
