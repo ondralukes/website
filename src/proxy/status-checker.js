@@ -85,7 +85,6 @@ class StatusChecker {
             if(err){
                 this.value.system.mem = undefined;
             } else {
-                console.log(stdout);
                 this.value.system.mem = {
                     total: parseInt(stdout.match(/MemTotal: *([0-9]*) kB/)[1],10),
                     available: parseInt(stdout.match(/MemAvailable: *([0-9]*) kB/)[1],10)
