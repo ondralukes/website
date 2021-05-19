@@ -22,6 +22,7 @@ jobs:
     - name: Deploying
       env:
         GIT_TOKEN:  ${{ secrets.GIT_TOKEN }}
+        HIDDEN_ENDPOINTS: ${{ secrets.HIDDEN_ENDPOINTS }}
       run: |
         ssh -o StrictHostKeyChecking=no -i ./ssh_key -l cd-deployer ondralukes.cz << sshend
         TEMP_DIR=\$(mktemp -d -t cd-XXXXXX)
@@ -34,6 +35,8 @@ jobs:
           cd website
           ./fillgitinfo.sh
           cd ..
+
+          echo "$HIDDEN_ENDPOINTS" > proxy/hidden.js
           
           docker create network docker-network
           docker-compose down

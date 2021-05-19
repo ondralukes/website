@@ -6,13 +6,13 @@ const proxy = require('http-proxy');
 
 const StatusChecker = require("./status-checker");
 
-var key = fs.readFileSync("/var/tls/live/ondralukes.cz/privkey.pem");
-var cert = fs.readFileSync("/var/tls/live/ondralukes.cz/fullchain.pem");
+const key = fs.readFileSync("/var/tls/live/ondralukes.cz/privkey.pem");
+const cert = fs.readFileSync("/var/tls/live/ondralukes.cz/fullchain.pem");
 
-var credentials = {key: key, cert: cert};
+const credentials = {key: key, cert: cert};
 
-var app = express();
-var proxyServer = proxy.createProxyServer();
+const app = express();
+const proxyServer = proxy.createProxyServer();
 
 const services = [
   {
@@ -56,6 +56,10 @@ app.use((req, res, next) => {
   }
 })
 
+// Hidden endpoints
+const hidden = require('./hidden.js');
+if(typeof hidden === 'function') hidden(app);
+
 app.get('/rawstatus', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
@@ -84,7 +88,7 @@ services.forEach((item) => {
     req.url = req.url.replace(req.path, newPath);
 
     //Redirect request
-    proxyServer.web(req, res, {target: item.target}, (err) => {
+    proxyServer.web(req, res, {target: item.target}, () => {
       res.statusCode = 500;
       res.write("Proxy error.");
       res.end();
@@ -92,7 +96,7 @@ services.forEach((item) => {
   });
 });
 
-var httpServer = http.createServer(app);
+const httpServer = http.createServer(app);
 
 spdy.createServer(credentials, app).listen(4443);
 
