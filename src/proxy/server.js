@@ -52,6 +52,12 @@ const services = [
   }
 ];
 
+for(const service of services){
+  const escapedUrl = service.url.replace(/\//g,'\\/');
+  //Match with or without trailing slash
+  service.regExp = new RegExp(`^(${escapedUrl}\\/|${escapedUrl}$)`);
+}
+
 const status = new StatusChecker(services, 10);
 
 //Redirect http to https
@@ -75,10 +81,7 @@ app.get('/rawstatus', async (req, res) => {
 
 services.forEach((item) => {
   if(!item.proxy) return;
-  const escapedUrl = item.url.replace(/\//g,'\\/');
-  //Match with or without trailing slash
-  const matchRegex = new RegExp(`^(${escapedUrl}\\/|${escapedUrl}$)`);
-  app.all(matchRegex, (req, res) => {
+  app.all(item.regExp, (req, res) => {
     //Remove service path root
     const newPath = req.path.replace(item.url, '');
     if(newPath === ''){
@@ -93,7 +96,6 @@ services.forEach((item) => {
     }
 
     req.url = req.url.replace(req.path, newPath);
-
     //Redirect request
     proxyServer.web(req, res, {target: item.target}, () => {
       res.statusCode = 500;
@@ -104,7 +106,19 @@ services.forEach((item) => {
 });
 
 const httpServer = http.createServer(app);
+const spdyServer = spdy.createServer(credentials, app);
 
-spdy.createServer(credentials, app).listen(4443);
+const wsRedirector = (req, socket, head) => {
+  for(const service of services){
+    if(!service.proxy) continue;
+    if(!service.regExp.test(req.url)) continue;
+    req.url = req.url.replace(service.url, '');
+    proxyServer.ws(req, socket, head, {target: service.target});
+    break;
+  }
+}
+httpServer.on('upgrade', wsRedirector);
+spdyServer.on('upgrade', wsRedirector);
 
 httpServer.listen(8080);
+spdyServer.listen(4443);
