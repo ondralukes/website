@@ -23,6 +23,13 @@ const services = [
     proxy: false
   },
   {
+    name: 'web-editor',
+    url: '/web-editor',
+    target: 'http://web-editor:8080',
+    containerName: 'web-editor',
+    proxy: true
+  },
+  {
     name: 'vault',
     url: '/vault',
     target: 'http://vault:8080',
