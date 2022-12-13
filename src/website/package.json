@@ -4,7 +4,7 @@
   "author": "ondralukes <mail@ondralukes.cz>",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.7.1",
+    "express": "^4.17.3",
     "stats-counter": "^2.0.2"
   }
 }
